@@ -48,6 +48,7 @@
 }
 
 .text_field{
+    cursor: pointer;
     width: 400px;
     height: 50px;
     background: #FFFFFF;
@@ -65,11 +66,12 @@
     }
 
     &_checked{
+        cursor: pointer;
         width: 400px;
         height: 50px;
         background: #FFFFFF;
         border-radius: 3px;
-        box-shadow: 0px 0px 4px #BDBDBD;
+        box-shadow: 0 0 4px #BDBDBD;
     }
 }
 
