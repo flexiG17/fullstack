@@ -56,16 +56,17 @@
     border-radius: 3px;
 
     &_disabled{
+        display: inline-flex;
         width: 400px;
         height: 50px;
         cursor: default;
-        margin-top: 66px;
         background: #FFFFFF;
         box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
         border-radius: 3px;
     }
 
     &_checked{
+        display: inline-flex;
         cursor: pointer;
         width: 400px;
         height: 50px;

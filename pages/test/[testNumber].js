@@ -1,29 +1,42 @@
 import styles from "./componentPage.module.scss";
 import CustomRadioButton from '../../components/customRadioButton/radioButton'
 import CustomButton from '../../components/customButton/button'
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {QUESTIONS_CONST} from '../../consts/questionConsts'
+import {useRouter} from "next/router";
+import {getAllQuestions} from "../../requests/request";
 
-export default function ComponentsPage() {
+export default function TestNumber() {
     const [clicked, setClicked] = useState(false)
-    const [selectedQuestion, setSelectedQuestion] = useState(0)
+    const [testQuestions, setTestQuestions] = useState(QUESTIONS_CONST[0])
 
-    let currentQuestion = QUESTIONS_CONST[selectedQuestion]
+    useEffect(() => {
+        getAllQuestions()
+            .then(data => {
+                setTestQuestions(data)
+            })
+    }, [])
+
+    const router = useRouter();
+    const {testNumber} = router.query;
+
+    const currentQuestion = testQuestions.questions[testNumber]
+
     return (
         <div className={styles.main_frame}>
             <div className={styles.header}>
                 <div className={styles.question_image}>
                     <div className={styles.question_image__text}>
-                        {`${currentQuestion.number}/${QUESTIONS_CONST.length}`}
+                        {`${currentQuestion.number}/${testQuestions.questions.length}`}
                     </div>
                 </div>
                 <div className={styles.clock_image}>
                     <div className={styles.clock_image__text}>
-                        60:00
+                        {currentQuestion.timeLimit}
                     </div>
                 </div>
                 <div className={styles.title}>
-                    {currentQuestion.title}
+                    {testQuestions.title}
                 </div>
             </div>
             <div className={styles.menu}>
@@ -31,11 +44,11 @@ export default function ComponentsPage() {
                 </div>
 
                 <div className={styles.menu__question}>
-                    {QUESTIONS_CONST.map(allQuestions =>
+                    {testQuestions.questions.map(allQuestions =>
                         // eslint-disable-next-line react/jsx-key
                         <div className={styles.menu__question__container}>
                             <div className={styles.menu__question__container__number}
-                                 onClick={() => setSelectedQuestion(allQuestions.number - 1)}>
+                                 onClick={() => router.push(`/test/${allQuestions.number}`)}>
                                 {allQuestions.number}
                             </div>
                         </div>
@@ -44,34 +57,32 @@ export default function ComponentsPage() {
             </div>
             <div className={styles.timer}>
                 <div className={styles.timer__time_limit}>
-                    01:45
+                    {currentQuestion.timeLimit}
                 </div>
             </div>
             <div className={styles.text_question}>
-                {currentQuestion.question}
+                {currentQuestion.text}
             </div>
             <div className={styles.answers_block}>
                 <div className={styles.answers_block__top}>
                     <div onClick={() => setClicked(!clicked)}>
-                        <CustomRadioButton text={currentQuestion.answers[0]} disabled={false}/>
+                        <CustomRadioButton text={currentQuestion.answers[0].text} disabled={false}/>
                     </div>
                     <div onClick={() => setClicked(!clicked)}>
-                        <CustomRadioButton text={currentQuestion.answers[1]} disabled={false}/>
+                        <CustomRadioButton text={currentQuestion.answers[1].text} disabled={false}/>
                     </div>
                 </div>
                 <div className={styles.answers_block__middle}>
                     <div onClick={() => setClicked(!clicked)}>
-                        <CustomRadioButton text={currentQuestion.answers[2]} disabled={false}/>
+                        <CustomRadioButton text={currentQuestion.answers[2].text} disabled={false}/>
                     </div>
                     <div onClick={() => setClicked(!clicked)}>
-                        <CustomRadioButton text={currentQuestion.answers[3]} disabled={false}/>
+                        <CustomRadioButton text={currentQuestion.answers[3].text} disabled={false}/>
                     </div>
                 </div>
                 <div className={styles.answers_block__bottom}>
                     <div
-                        onClick={() => {
-                            setSelectedQuestion(currentQuestion.number !== QUESTIONS_CONST.length ? selectedQuestion + 1 : 0)
-                        }}>
+                        onClick={() => router.push(`/test/${currentQuestion.number !== testQuestions.questions.length - 1 ? currentQuestion.number + 1 : 0}`)}>
                         <CustomButton disabled={false} text={'Пропустить'}/>
                     </div>
                     <CustomButton disabled={!clicked} text={'Ответить'}/>

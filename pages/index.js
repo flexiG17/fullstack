@@ -3,8 +3,11 @@ import styles from '../styles/Home.module.css'
 import CustomButton from '../components/./customButton/button'
 import CustomRadioButton from '../components/customRadioButton/radioButton'
 import {CheckButton} from "../components/customCheckButton/checkButton";
+import {useRouter} from "next/router";
 
 export default function Home() {
+    const router = useRouter();
+
     return (
         <div>
             <div className={styles.container}>
@@ -17,17 +20,15 @@ export default function Home() {
 
             <div>
                 <CustomButton text={'Создать игру'} disabled={false}/>
-                <CustomButton text={'Создать игру'} disabled={false}/>
-                <CustomButton text={'Создать игру'} disabled={false}/>
                 <CustomButton text={'Создать игру'} disabled={true}/>
-                <CustomRadioButton text={'Романа Мстиславича'} disabled={false}/>
-                <CustomRadioButton text={'Романа Мстиславича'} disabled={false}/>
                 <CustomRadioButton text={'Романа Мстиславича'} disabled={false}/>
                 <CustomRadioButton text={'Романа Мстиславича'} disabled={true}/>
                 <CheckButton disabled={false}/>
-                <CheckButton disabled={false}/>
-                <CheckButton disabled={false}/>
                 <CheckButton disabled={true}/>
+            </div>
+
+            <div onClick={() => router.push(`/test/${0}`)}>
+                <CustomButton text={'Начать тест'} disabled={false}/>
             </div>
         </div>
     )
