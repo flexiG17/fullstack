@@ -1,0 +1,95 @@
+.radio{
+    width: 24px;
+    height: 24px;
+    margin-top: 17px;
+    margin-left: 14px;
+    display: inline-flex;
+
+    &_outer{
+        width: 18px;
+        height: 18px;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        border: 2px solid #828282;
+
+        &_disabled{
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #EEEEEE;
+        }
+
+        &_dot{
+            width: 10px;
+            height: 10px;
+            background-color: #00EAD9;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        &:hover{
+            border: 2px solid #00EAD9;
+            cursor: pointer;
+        }
+    }
+
+    &_checked{
+        width: 18px;
+        height: 18px;
+        display: inline-flex;
+        cursor: pointer;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        border: 2px solid #00EAD9;
+    }
+}
+
+.text_field{
+    width: 400px;
+    height: 50px;
+    background: #FFFFFF;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+
+    &_disabled{
+        width: 400px;
+        height: 50px;
+        cursor: default;
+        margin-top: 66px;
+        background: #FFFFFF;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        border-radius: 3px;
+    }
+
+    &_checked{
+        width: 400px;
+        height: 50px;
+        background: #FFFFFF;
+        border-radius: 3px;
+        box-shadow: 0px 0px 4px #BDBDBD;
+    }
+}
+
+.text{
+
+    &_position{
+        cursor: pointer;
+        position: absolute;
+        display: flex;
+        align-items: center;
+        margin-left: 32px;
+        width: 280px;
+        height: 18px;
+    }
+
+    &_style{
+        font-family: 'Roboto', sans-serif;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 15px;
+        color: #000000;
+    }
+}

@@ -1,0 +1,64 @@
+.checkButton, .checkButton_active, .checkButton_disabled {
+  margin-top: 55px;
+  margin-left: 10px;
+  display: inline-flex;
+  border-radius: 3px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+  background: white;
+  padding: 13px 13px 13px 13px;
+
+  margin-bottom: 50px;
+
+  &__frame {
+    display: flex;
+    align-items: center;
+
+    &_check {
+      display: inline-flex;
+      box-sizing: border-box;
+
+      &_out {
+        border: 2px solid #828282;
+        width: 20px;
+        height: 20px;
+        padding: 3px;
+        box-sizing: border-box;
+        border-radius: 3px;
+        display: flex;
+        position: relative;
+      }
+    }
+
+    &_text {
+      color: black;
+      margin-bottom: 3px;
+    }
+  }
+}
+
+.checkButton_active {
+
+  .checkButton__frame_check_out {
+    border: 2px solid #00EAD9;
+    background: #00EAD9;
+  }
+}
+
+.checkButton:hover {
+  cursor: pointer;
+
+  .checkButton__frame_check_out {
+    border: 2px solid #00EAD9;
+  }
+}
+
+.checkButton_disabled {
+
+  .checkButton__frame_check_out {
+    border: 2px solid #BDBDBD;
+  }
+
+  .checkButton__frame_text {
+    color: #BDBDBD;;
+  }
+}
