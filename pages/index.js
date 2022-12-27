@@ -21,13 +21,16 @@ export default function Home() {
             <div>
                 <CustomButton text={'Создать игру'} disabled={false}/>
                 <CustomButton text={'Создать игру'} disabled={true}/>
-                <CustomRadioButton text={'Романа Мстиславича'} disabled={false}/>
-                <CustomRadioButton text={'Романа Мстиславича'} disabled={true}/>
+                <CustomRadioButton text={'Роман Мстиславич'} disabled={false}/>
+                <CustomRadioButton text={'Роман Мстиславич'} disabled={true}/>
                 <CheckButton disabled={false}/>
                 <CheckButton disabled={true}/>
             </div>
 
-            <div onClick={() => router.push(`/test/${0}`)}>
+            <div onClick={() => router.push({
+                    pathname: `/test/${0}`,
+                    query: {}
+                })}>
                 <CustomButton text={'Начать тест'} disabled={false}/>
             </div>
         </div>

@@ -5,7 +5,6 @@ export default async function getBlockOfTheQuestions(req, res) {
     //const url = 'mongodb://localhost:27017';
     const client = new MongoClient(url);
     const db = client.db('fullstack');
-    console.log(db)
     const collection = db.collection('test');
     const test = await collection.findOne({ 'testCode': '0'});
     res.json(test);

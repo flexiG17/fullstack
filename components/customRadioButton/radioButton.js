@@ -28,7 +28,7 @@ export default function CustomRadioButton(props) {
                          !props.disabled ?
                              checked ? setChecked(false) : setChecked(true) : ''
                      }}>
-                    <div className={styles.text_style}>
+                    <div className={props.disabled ? styles.text_style_disabled : styles.text_style}>
                         {props.text}
                     </div>
                 </div>

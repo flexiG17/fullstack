@@ -19,6 +19,10 @@
             height: 18px;
             border-radius: 50%;
             border: 2px solid #EEEEEE;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            cursor: default;
         }
 
         &_dot{
@@ -56,17 +60,17 @@
     border-radius: 3px;
 
     &_disabled{
-        display: inline-flex;
+        cursor: default;
+        display: flex;
         width: 400px;
         height: 50px;
-        cursor: default;
         background: #FFFFFF;
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.06);
         border-radius: 3px;
     }
 
     &_checked{
-        display: inline-flex;
+        display: flex;
         cursor: pointer;
         width: 400px;
         height: 50px;
@@ -77,9 +81,7 @@
 }
 
 .text{
-
     &_position{
-        cursor: pointer;
         position: absolute;
         display: flex;
         align-items: center;
@@ -90,9 +92,18 @@
 
     &_style{
         font-family: 'Roboto', sans-serif;
+        cursor: pointer;
         font-style: normal;
         font-weight: 500;
         font-size: 15px;
         color: #000000;
+
+        &_disabled{
+            cursor: default;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 500;
+            font-size: 15px;
+            color: #BDBDBD;
+        }
     }
 }
