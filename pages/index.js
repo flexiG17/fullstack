@@ -27,10 +27,13 @@ export default function Home() {
                 <CheckButton disabled={true}/>
             </div>
 
-            <div onClick={() => router.push({
+            <div onClick={() => {
+                localStorage.setItem('userStatistics', JSON.stringify([]))
+                router.push({
                     pathname: `/test/${0}`,
                     query: {}
-                })}>
+                })
+            }}>
                 <CustomButton text={'Начать тест'} disabled={false}/>
             </div>
         </div>

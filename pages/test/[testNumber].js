@@ -8,44 +8,68 @@ import {getAllQuestions} from "../../requests/request";
 import {Backdrop, CircularProgress} from "@mui/material";
 import {CountdownCircleTimer} from "react-countdown-circle-timer";
 
+function GetRightAnswer(question) {
+    let result = ''
+    question.answers.map(answer => {
+        if (answer.valid) {
+            result = answer.text
+        }
+    })
+    return result
+}
+
+function PushUserStatistics(currentQuestion, restOfTime, answer) {
+    const parsedStorageFile = JSON.parse(localStorage.getItem('userStatistics'))
+    const result = GetRightAnswer(currentQuestion)
+    parsedStorageFile.push({
+        questionNumber: currentQuestion.number,
+        restOfTime: restOfTime,
+        userAnswer: answer,
+        correctAnswer: result,
+        isGivenCorrectAnswer: answer === result
+    })
+
+    localStorage.setItem('userStatistics', JSON.stringify(parsedStorageFile))
+}
+
+function CheckUserStatistics() {
+    const parsedStorageFile = JSON.parse(localStorage.getItem('userStatistics'))
+    const sortedFile =
+        parsedStorageFile.sort((a, b) => {
+            const keyA = +a.questionNumber
+            const keyB = +b.questionNumber
+            if (keyA < keyB) return -1
+            if (keyA < keyB) return 1
+            if (keyA === keyB) return 0
+        })
+
+    for (let i = 0; i < sortedFile.length - 1; i++) {
+        if (sortedFile[i].questionNumber === sortedFile[i + 1].questionNumber) {
+            if (sortedFile[i].userAnswer === null)
+                sortedFile.splice(i, 1)
+        }
+    }
+    console.log(parsedStorageFile);
+}
+
 export default function TestNumber() {
     const router = useRouter()
     const {testNumber} = router.query;
 
-    const [selectedAnswer, setSelectedAnswer] = useState(false)
+    const [isSelectedAnswer, setIsSelectedAnswer] = useState(false)
     const [clickedNumberRadioButton, setClickedNumberRadioButton] = useState(null)
     const [testQuestions, setTestQuestions] = useState(QUESTIONS_CONST[0])
     const [loading, setLoading] = useState(true)
     const [endOfTimer, setEndOfTimer] = useState(false)
-
-    const handleSkipQuestion = () => {
-        setLoading(true)
-        setTimeout(() => {
-            router.push(`/test/${currentQuestion.number !== testQuestions.questions.length - 1 ? currentQuestion.number + 1 : 0}`)
-            //router.reload()
-            setClickedNumberRadioButton(null)
-            setSelectedAnswer(false)
-            setLoading(false)
-            setEndOfTimer(false)
-        }, 500)
-    }
-
-    const handleChooseQuestion = (currentQuestion) => {
-        setLoading(true)
-        setTimeout(() => {
-            router.push(`/test/${currentQuestion.number}`)
-            //router.reload()
-            setClickedNumberRadioButton(null)
-            setSelectedAnswer(false)
-            setLoading(false)
-            setEndOfTimer(false)
-        }, 500)
-    }
-
-
+    const [restOfTime, setRestOfTime] = useState(null)
+    const [answer, setAnswer] = useState(null)
+    /*const [skippedQuestion, setSkippedQuestion] = useState(false)
+    const [selectedQuestion, setSelectedQuestion] = useState(false)*/
+    const [confirmedAnswer, setConfirmedAnswer] = useState(false)
+    const [playingTimer, setPlayingTimer] = useState(true)
     useEffect(() => {
         getAllQuestions()
-            .then(data =>{
+            .then(data => {
                 setTestQuestions(data)
             })
             .finally(() => {
@@ -54,18 +78,56 @@ export default function TestNumber() {
                 }, 1500)
             })
     }, [])
-    const renderTime = ({remainingTime}) => {
-        if (remainingTime === 0) {
-            return <div className={styles.timer__time_limit}>Конец</div>;
-        }
-
-        return (
-            <div className="timer">
-                <div className={styles.timer__time_limit}>{remainingTime}</div>
-            </div>
-        );
-    }
     const currentQuestion = testQuestions.questions[testNumber]
+    const handleSkipQuestion = () => {
+        //setSkippedQuestion(true)
+        setLoading(true)
+        !confirmedAnswer ? PushUserStatistics(currentQuestion, restOfTime, null) : ''
+        setTimeout(() => {
+            router.push(`/test/${currentQuestion.number !== testQuestions.questions.length - 1 ? currentQuestion.number + 1 : 0}`)
+            setConfirmedAnswer(false)
+            //setSkippedQuestion(false)
+            setPlayingTimer(true)
+            setClickedNumberRadioButton(null)
+            setIsSelectedAnswer(false)
+            setLoading(false)
+            setEndOfTimer(false)
+        }, 500)
+    }
+    const handleChooseQuestion = (currentQuestion) => {
+        //setSelectedQuestion(true)
+        setLoading(true)
+        !confirmedAnswer ? PushUserStatistics(currentQuestion, restOfTime, null) : ''
+        setTimeout(() => {
+            router.push(`/test/${currentQuestion.number}`)
+            setConfirmedAnswer(false)
+            //setSelectedQuestion(false)
+            setPlayingTimer(true)
+            setClickedNumberRadioButton(null)
+            setIsSelectedAnswer(false)
+            setLoading(false)
+            setEndOfTimer(false)
+        }, 500)
+    }
+
+    const handleAnswer = () => {
+        setConfirmedAnswer(true)
+        setPlayingTimer(false)
+        PushUserStatistics(currentQuestion, restOfTime, answer)
+    }
+
+    const handleCloseTest = () => {
+        //setLoading(true)
+        CheckUserStatistics()
+        // запрос в бд
+        /*setTimeout(() => {
+            router.push(`/result/testCode/${testQuestions.testCode}`)
+        }, 500)*/
+    }
+    const renderTime = ({remainingTime}) => {
+        setRestOfTime(remainingTime)
+        return <div className={styles.timer__time_limit}>{remainingTime === 0 ? 'Время вышло' : remainingTime}</div>
+    }
     if (loading)
         return (
             <Backdrop sx={{zIndex: (theme) => theme.zIndex.drawer + 1}}
@@ -90,6 +152,9 @@ export default function TestNumber() {
                         </div>
                         <div className={styles.title}>
                             {testQuestions.title}
+                        </div>
+                        <div onClick={handleCloseTest}>
+                            ffff
                         </div>
                     </div>
                     <div className={styles.menu}>
@@ -116,8 +181,9 @@ export default function TestNumber() {
                             trailStrokeWidth={0}
                             trailColor='#FFFFFF'
                             size={120}
-                            isPlaying={true}
+                            isPlaying={playingTimer}
                             duration={currentQuestion.timeLimit}
+                            /*initialRemainingTime={+restOfTime}*/
                             colors="#00EAD9"
                             onComplete={() => {
                                 setEndOfTimer(true)
@@ -125,9 +191,6 @@ export default function TestNumber() {
                         >
                             {renderTime}
                         </CountdownCircleTimer>
-                        {/*<div className={styles.timer__time_limit}>
-                            {currentQuestion.timeLimit}
-                        </div>*/}
                     </div>
                     <div className={styles.text_question}>
                         {currentQuestion.text}
@@ -135,66 +198,75 @@ export default function TestNumber() {
                     <div className={styles.answers_block}>
                         <div className={styles.answers_block__top}>
                             <div onClick={() => {
-                                if (!selectedAnswer && !endOfTimer) {
-                                    setSelectedAnswer(true)
+                                if (!isSelectedAnswer && !endOfTimer) {
+                                    setAnswer(currentQuestion.answers[0].text)
+                                    setIsSelectedAnswer(true)
                                     setClickedNumberRadioButton(0)
-                                } else if (selectedAnswer && clickedNumberRadioButton === 0) {
-                                    setSelectedAnswer(false)
+                                } else if (isSelectedAnswer && clickedNumberRadioButton === 0 && !confirmedAnswer) {
+                                    setAnswer(null)
+                                    setIsSelectedAnswer(false)
                                     setClickedNumberRadioButton(null)
                                 }
                             }}>
                                 <CustomRadioButton
                                     text={currentQuestion.answers[0].text}
-                                    disabled={endOfTimer || clickedNumberRadioButton !== null && clickedNumberRadioButton !== 0}/>
+                                    disabled={endOfTimer || clickedNumberRadioButton !== null && clickedNumberRadioButton !== 0 || confirmedAnswer}/>
                             </div>
                             <div onClick={() => {
-                                if (!selectedAnswer && !endOfTimer) {
-                                    setSelectedAnswer(true)
+                                if (!isSelectedAnswer && !endOfTimer) {
+                                    setAnswer(currentQuestion.answers[1].text)
+                                    setIsSelectedAnswer(true)
                                     setClickedNumberRadioButton(1)
-                                } else if (selectedAnswer && clickedNumberRadioButton === 1) {
-                                    setSelectedAnswer(false)
+                                } else if (isSelectedAnswer && clickedNumberRadioButton === 1 && !confirmedAnswer) {
+                                    setAnswer(null)
+                                    setIsSelectedAnswer(false)
                                     setClickedNumberRadioButton(null)
                                 }
                             }}>
                                 <CustomRadioButton
                                     text={currentQuestion.answers[1].text}
-                                    disabled={endOfTimer || clickedNumberRadioButton !== null && clickedNumberRadioButton !== 1}/>
+                                    disabled={endOfTimer || clickedNumberRadioButton !== null && clickedNumberRadioButton !== 1 || confirmedAnswer}/>
                             </div>
                         </div>
                         <div className={styles.answers_block__middle}>
                             <div onClick={() => {
-                                if (!selectedAnswer && !endOfTimer) {
-                                    setSelectedAnswer(true)
+                                if (!isSelectedAnswer && !endOfTimer) {
+                                    setAnswer(currentQuestion.answers[2].text)
+                                    setIsSelectedAnswer(true)
                                     setClickedNumberRadioButton(2)
-                                } else if (selectedAnswer && clickedNumberRadioButton === 2) {
-                                    setSelectedAnswer(false)
+                                } else if (isSelectedAnswer && clickedNumberRadioButton === 2 && !confirmedAnswer) {
+                                    setAnswer(null)
+                                    setIsSelectedAnswer(false)
                                     setClickedNumberRadioButton(null)
                                 }
                             }}>
                                 <CustomRadioButton
                                     text={currentQuestion.answers[2].text}
-                                    disabled={endOfTimer || clickedNumberRadioButton !== null && clickedNumberRadioButton !== 2}/>
+                                    disabled={endOfTimer || clickedNumberRadioButton !== null && clickedNumberRadioButton !== 2 || confirmedAnswer}/>
                             </div>
                             <div onClick={() => {
-                                if (!selectedAnswer && !endOfTimer) {
-                                    setSelectedAnswer(true)
+                                if (!isSelectedAnswer && !endOfTimer) {
+                                    setAnswer(currentQuestion.answers[3].text)
+                                    setIsSelectedAnswer(true)
                                     setClickedNumberRadioButton(3)
-                                } else if (selectedAnswer && clickedNumberRadioButton === 3) {
-                                    setSelectedAnswer(false)
+                                } else if (isSelectedAnswer && clickedNumberRadioButton === 3 && !confirmedAnswer) {
+                                    setAnswer(null)
+                                    setIsSelectedAnswer(false)
                                     setClickedNumberRadioButton(null)
                                 }
                             }}>
                                 <CustomRadioButton
                                     text={currentQuestion.answers[3].text}
-                                    disabled={endOfTimer || clickedNumberRadioButton !== null && clickedNumberRadioButton !== 3}/>
+                                    disabled={endOfTimer || clickedNumberRadioButton !== null && clickedNumberRadioButton !== 3 || confirmedAnswer}/>
                             </div>
                         </div>
                         <div className={styles.answers_block__bottom}>
-                            <div
-                                onClick={handleSkipQuestion}>
-                                <CustomButton disabled={false} text={'Пропустить'}/>
+                            <div onClick={confirmedAnswer ? null : handleSkipQuestion}>
+                                <CustomButton disabled={confirmedAnswer} text={'Пропустить'}/>
                             </div>
-                            <CustomButton disabled={!selectedAnswer} text={'Ответить'}/>
+                            <div onClick={handleAnswer}>
+                                <CustomButton disabled={!isSelectedAnswer} text={'Ответить'}/>
+                            </div>
                         </div>
                     </div>
                 </div>
