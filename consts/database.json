@@ -1,0 +1,202 @@
+[{
+  "_id": {
+    "$oid": "638f8c2676396886c25af806"
+  },
+  "title": "Тест по всем дисциплинам",
+  "timeLimit": 3600,
+  "questions": [
+    {
+      "number": 0,
+      "text": "С именем какого князя связано объединение Галицкого и Волынского княжеств?",
+      "timeLimit": 60,
+      "type": "radio",
+      "answers": [
+        {
+          "text": "Романа Мстиславича",
+          "valid": true
+        },
+        {
+          "text": "Александра Невского",
+          "valid": false
+        },
+        {
+          "text": "Андрея Боголюбского",
+          "valid": false
+        },
+        {
+          "text": "Юрия Долгорукого",
+          "valid": false
+        }
+      ]
+    },
+    {
+      "number": 1,
+      "text": "Сколько будет 2 + 2",
+      "timeLimit": 60,
+      "type": "radio",
+      "answers": [
+        {
+          "text": "1",
+          "valid": false
+        },
+        {
+          "text": "2",
+          "valid": false
+        },
+        {
+          "text": "3",
+          "valid": false
+        },
+        {
+          "text": "4",
+          "valid": true
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "text": "Формула площади окружности",
+      "timeLimit": 60,
+      "type": "radio",
+      "answers": [
+        {
+          "text": "pr^2",
+          "valid": true
+        },
+        {
+          "text": "cmt",
+          "valid": false
+        },
+        {
+          "text": "pr/4",
+          "valid": false
+        },
+        {
+          "text": "b^2-4ac",
+          "valid": false
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "text": "Название пятой планеты солнечной системы",
+      "timeLimit": 60,
+      "type": "radio",
+      "answers": [
+        {
+          "text": "Меркурий",
+          "valid": false
+        },
+        {
+          "text": "Юпитер",
+          "valid": true
+        },
+        {
+          "text": "Земля",
+          "valid": false
+        },
+        {
+          "text": "Марс",
+          "valid": false
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "text": "Дата распада СССР",
+      "timeLimit": 60,
+      "type": "radio",
+      "answers": [
+        {
+          "text": "24 июля 2000 г.",
+          "valid": false
+        },
+        {
+          "text": "7 февраля 1889 г.",
+          "valid": false
+        },
+        {
+          "text": "26 декабря 1991 г.",
+          "valid": true
+        },
+        {
+          "text": "16 декабря 1997 г.",
+          "valid": false
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "text": "Какой город является столицой Бельгии?",
+      "timeLimit": 60,
+      "type": "radio",
+      "answers": [
+        {
+          "text": "Вавр",
+          "valid": false
+        },
+        {
+          "text": "Лёвен",
+          "valid": false
+        },
+        {
+          "text": "Брюссель",
+          "valid": true
+        },
+        {
+          "text": "Гент",
+          "valid": false
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "text": "Какой процент содержания воды в теле взрослого человека?",
+      "timeLimit": 60,
+      "type": "radio",
+      "answers": [
+        {
+          "text": "65%",
+          "valid": true
+        },
+        {
+          "text": "75%",
+          "valid": false
+        },
+        {
+          "text": "85%",
+          "valid": false
+        },
+        {
+          "text": "90%",
+          "valid": false
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "text": "Произведения музыкального искусства, получившие мировое признание и  имеющие непреходящую ценность для национальной и мировой культуры:",
+      "timeLimit": 60,
+      "type": "radio",
+      "answers": [
+        {
+          "text": "Популярная музыка",
+          "valid": false
+        },
+        {
+          "text": "Легкая музыка",
+          "valid": false
+        },
+        {
+          "text": "Современная музыка",
+          "valid": false
+        },
+        {
+          "text": "Классическая музыка",
+          "valid": true
+        }
+      ]
+    }
+  ],
+  "testCode": "0"
+}]

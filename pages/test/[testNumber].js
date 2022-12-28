@@ -4,7 +4,7 @@ import CustomButton from '../../components/customButton/button'
 import {useEffect, useState} from "react";
 import {QUESTIONS_CONST} from '../../consts/questionConsts'
 import {useRouter} from "next/router";
-import {getAllQuestions} from "../../requests/request";
+import {getAllQuestions, sendUserAnswers} from "../../requests/request";
 import {Backdrop, CircularProgress} from "@mui/material";
 import {CountdownCircleTimer} from "react-countdown-circle-timer";
 
@@ -23,6 +23,7 @@ function PushUserStatistics(currentQuestion, restOfTime, answer) {
     const result = GetRightAnswer(currentQuestion)
     parsedStorageFile.push({
         questionNumber: currentQuestion.number,
+        questionText: currentQuestion.text,
         restOfTime: restOfTime,
         userAnswer: answer,
         correctAnswer: result,
@@ -47,11 +48,13 @@ function CheckUserStatistics() {
         if (sortedFile[i].questionNumber === sortedFile[i + 1].questionNumber) {
             if (sortedFile[i].userAnswer === null)
                 sortedFile.splice(i, 1)
+            else if (sortedFile[i + 1].userAnswer === null)
+                sortedFile.splice(i + 1, 1)
         }
     }
-    console.log(parsedStorageFile);
-}
 
+    return sortedFile
+}
 export default function TestNumber() {
     const router = useRouter()
     const {testNumber} = router.query;
@@ -63,8 +66,6 @@ export default function TestNumber() {
     const [endOfTimer, setEndOfTimer] = useState(false)
     const [restOfTime, setRestOfTime] = useState(null)
     const [answer, setAnswer] = useState(null)
-    /*const [skippedQuestion, setSkippedQuestion] = useState(false)
-    const [selectedQuestion, setSelectedQuestion] = useState(false)*/
     const [confirmedAnswer, setConfirmedAnswer] = useState(false)
     const [playingTimer, setPlayingTimer] = useState(true)
     useEffect(() => {
@@ -80,13 +81,11 @@ export default function TestNumber() {
     }, [])
     const currentQuestion = testQuestions.questions[testNumber]
     const handleSkipQuestion = () => {
-        //setSkippedQuestion(true)
         setLoading(true)
         !confirmedAnswer ? PushUserStatistics(currentQuestion, restOfTime, null) : ''
         setTimeout(() => {
             router.push(`/test/${currentQuestion.number !== testQuestions.questions.length - 1 ? currentQuestion.number + 1 : 0}`)
             setConfirmedAnswer(false)
-            //setSkippedQuestion(false)
             setPlayingTimer(true)
             setClickedNumberRadioButton(null)
             setIsSelectedAnswer(false)
@@ -95,13 +94,11 @@ export default function TestNumber() {
         }, 500)
     }
     const handleChooseQuestion = (currentQuestion) => {
-        //setSelectedQuestion(true)
         setLoading(true)
         !confirmedAnswer ? PushUserStatistics(currentQuestion, restOfTime, null) : ''
         setTimeout(() => {
             router.push(`/test/${currentQuestion.number}`)
             setConfirmedAnswer(false)
-            //setSelectedQuestion(false)
             setPlayingTimer(true)
             setClickedNumberRadioButton(null)
             setIsSelectedAnswer(false)
@@ -115,10 +112,14 @@ export default function TestNumber() {
         setPlayingTimer(false)
         PushUserStatistics(currentQuestion, restOfTime, answer)
     }
-
     const handleCloseTest = () => {
         //setLoading(true)
-        CheckUserStatistics()
+        sendUserAnswers(testQuestions.testCode, CheckUserStatistics())
+            .then(() => {
+                setTimeout(() => {
+                    router.push(`/result/testCode/${testQuestions.testCode}`)
+                }, 500)
+            })
         // запрос в бд
         /*setTimeout(() => {
             router.push(`/result/testCode/${testQuestions.testCode}`)
@@ -146,19 +147,22 @@ export default function TestNumber() {
                             </div>
                         </div>
                         <div className={styles.clock_image}>
-                            <div className={styles.clock_image__text}>
-                                {currentQuestion.timeLimit}
+                            <div className={styles.question_image__text}>
+                                {`${currentQuestion.timeLimit}:00`}
                             </div>
                         </div>
                         <div className={styles.title}>
                             {testQuestions.title}
                         </div>
-                        <div onClick={handleCloseTest}>
-                            ffff
+                        <div className={styles.end_button_position} onClick={handleCloseTest}>
+                            <CustomButton text={'Завершить'}/>
                         </div>
                     </div>
                     <div className={styles.menu}>
-                        <div className={styles.menu__arrow}>
+                        <div className={styles.menu__arrow} onClick={() => {
+                            router.push('/')
+                        }
+                        }>
                         </div>
                         <div className={styles.menu__question}>
                             {testQuestions.questions.map(currentQuestion =>
@@ -182,7 +186,7 @@ export default function TestNumber() {
                             trailColor='#FFFFFF'
                             size={120}
                             isPlaying={playingTimer}
-                            duration={currentQuestion.timeLimit}
+                            duration={60}
                             /*initialRemainingTime={+restOfTime}*/
                             colors="#00EAD9"
                             onComplete={() => {
@@ -265,7 +269,7 @@ export default function TestNumber() {
                                 <CustomButton disabled={confirmedAnswer} text={'Пропустить'}/>
                             </div>
                             <div onClick={handleAnswer}>
-                                <CustomButton disabled={!isSelectedAnswer} text={'Ответить'}/>
+                                <CustomButton disabled={!isSelectedAnswer || confirmedAnswer} text={'Ответить'}/>
                             </div>
                         </div>
                     </div>

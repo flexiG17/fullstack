@@ -68,6 +68,8 @@
   }
 
   .question_image{
+    position: absolute;
+    left: 138px;
     height: 48px;
     width: 48px;
     background: url('../images/question.svg') no-repeat;
@@ -76,19 +78,29 @@
 
     &__text{
       margin-left: 63px;
+      font-family: 'Roboto', sans-serif;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 24px;
+      line-height: 24px;
+
+      color: #006666;
     }
   }
 
   .clock_image{
+    position: absolute;
+    left: 274px;
     height: 48px;
     width: 48px;
     background: url('../images/timer.svg') no-repeat;
     align-items: center;
     display: flex;
+  }
 
-    &__text{
-      margin-left: 63px;
-    }
+  .end_button_position{
+    position: absolute;
+    left: 1730px;
   }
 }
 
